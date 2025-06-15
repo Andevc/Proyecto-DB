@@ -11,21 +11,7 @@ from tempfile import NamedTemporaryFile
 from database.db_pgsql import DataBase
 
 app = Flask(__name__)
-app.secret="secret_key"
-
-# Conexión a la base de datos
-""" def DataBase():
-    try:
-        conexion = mysql.connector.connect(
-            host="localhost",
-            user="root",  # Usuario por defecto en XAMPP es "root"
-            password="123456",  # Contraseña por defecto en XAMPP es vacía
-            database="dbcine" # Nombre de la DB
-        )
-        return conexion
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        return None """
+app.secret_key="clave_secreta_para_flask"
 
 # para el login funcion
 @app.route('/login', methods=['GET', 'POST'])
@@ -37,26 +23,25 @@ def login():
         # Comprobar si las credenciales son de administrador
         if usuario == 'manager' and contrasena == 'admin123':
             session['usuario'] = usuario
-            return redirect('/admin')  # Redirigir al panel de administración
+            return redirect('/admin')
         
-        # Comprobar las credenciales en la base de datos para usuarios normales
+        # Validar credenciales en la base de datos
         db = DataBase()
-        db.execur("SELECT * FROM usuarios WHERE usuario = %s AND contrasena = %s")
-        """ cursor = conexion.cursor(dictionary=True)
-        query = 
-        cursor.execute(query, (usuario, contrasena)) """
-        user = db.fetchone()
-        # cursor.close()
-        db.close()
+        try:
+            db.execute("SELECT * FROM usuarios WHERE usuario = %s AND contrasena = %s", (usuario, contrasena))
+            user = db.fetchone()
+        finally:
+            db.close()
 
         if user:
-            session['usuario'] = user['Usuario']
-            return redirect('/')  # Redirigir al índice para usuarios normales
+            session['usuario'] = user['usuario']  # Cuidado: campo sensible a minúsculas
+            return redirect('/')
         else:
             flash('Usuario o contraseña incorrectos')
             return redirect('/login')
-    
+
     return render_template('login.html')
+
 @app.route('/admin')
 def admin():
     if 'usuario' not in session:
@@ -99,40 +84,33 @@ def home():
 #para obtener peliculas
 @app.route('/pelicula/<int:idPelicula>')
 def obtener_pelicula(idPelicula):
-    conexion = DataBase()
-    cursor = conexion.cursor(dictionary=True)
-
-    query = "SELECT * FROM Pelicula WHERE idPelicula = %s"  # Tabla correcta
-    cursor.execute(query, (idPelicula,))
-    pelicula = cursor.fetchone()
-
-    cursor.close()
-    conexion.close()
-
+    db = DataBase()
+    try:
+        db.execute("SELECT * FROM pelicula WHERE idPelicula = %s", (idPelicula,))
+        pelicula = db.fetchone()
+    finally:
+        db.close()
+    
     return jsonify(pelicula)
 
-#Obtener Seciones
-# Ruta para obtener las sesiones de una película por su idPelicula
+# Obtener sesiones de una película
 @app.route('/sesiones/<int:idPelicula>')
 def obtener_sesiones(idPelicula):
-    conexion = DataBase()
-    cursor = conexion.cursor(dictionary=True)
+    db = DataBase()
+    try:
+        db.execute("SELECT * FROM sesion WHERE idPelicula = %s", (idPelicula,))
+        sesiones = db.fetchall()
 
-    query = "SELECT * FROM Sesion WHERE idPelicula = %s"
-    cursor.execute(query, (idPelicula,))
-    sesiones = cursor.fetchall()
-
-    # Convertimos timedelta a un formato serializable en JSON
-    for sesion in sesiones:
-        for key, value in sesion.items():
-            if isinstance(value, timedelta):
-                sesion[key] = str(value)  # Convertir a formato HH:MM:SS
-                # O usa `sesion[key] = value.total_seconds()`
-
-    cursor.close()
-    conexion.close()
-
+        # Convertimos campos de tipo TIME o INTERVAL a string
+        for sesion in sesiones:
+            for key, value in sesion.items():
+                if isinstance(value, timedelta):
+                    sesion[key] = str(value)
+    finally:
+        db.close()
+    
     return jsonify(sesiones)
+
 # Ruta para registro
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -145,35 +123,37 @@ def register():
         usuario = request.form['usuario']
         contrasena = request.form['contrasena']
 
-        conexion = DataBase()
-        cursor = conexion.cursor()
-        query = """
-        INSERT INTO Usuarios (DNI, Nombre, Apellidos, Fecha_Nac, Correo, Usuario, Contrasena, Fecha_Registro) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, CURDATE())
-        """
-        cursor.execute(query, (dni, nombre, apellidos, fecha_nac, correo, usuario, contrasena))
-        conexion.commit()
-        cursor.close()
-        conexion.close()
+        db = DataBase()
+        try:
+            query = """
+            INSERT INTO usuarios (DNI, Nombre, Apellidos, Fecha_Nac, Correo, Usuario, Contrasena, Fecha_Registro) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, CURRENT_DATE)
+            """
+            db.execute(query, (dni, nombre, apellidos, fecha_nac, correo, usuario, contrasena))
+        finally:
+            db.close()
 
         flash('Usuario registrado con éxito. Por favor, inicia sesión.')
         return redirect('/login')
+    
     return render_template('register.html')
+
 
 # Ruta para el índice (restringido a usuarios logueados)
 @app.route('/')
 def index():
     if 'usuario' not in session:
         return redirect('/login')
-    
-    conexion = DataBase()
-    cursor = conexion.cursor(dictionary=True)
-    cursor.execute("SELECT idPelicula, Titulo, Cartel FROM Pelicula")
-    peliculas = cursor.fetchall()
-    cursor.close()
-    conexion.close()
+
+    db = DataBase()
+    try:
+        db.execute("SELECT idPelicula, Titulo, Cartel FROM pelicula")
+        peliculas = db.fetchall()
+    finally:
+        db.close()
     
     return render_template('index.html', usuario=session['usuario'], peliculas=peliculas)
+
 
 
 # Ruta para cerrar sesión

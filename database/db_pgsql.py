@@ -4,15 +4,20 @@ from psycopg2.extras import RealDictCursor
 
 class DataBase:
     def __init__(self):
-        self.connection = psycopg2.connect(
-            host=config('PG_HOST'),
-            user=config('PG_USER'),
-            password=config('PG_PASSWORD'),
-            dbname=config('PG_DB'),
-            port=config('PG_PORT'),
-            cursor_factory=RealDictCursor
-        )
-        self.cursor = self.connection.cursor()
+        try:
+            self.connection = psycopg2.connect(
+                host=config('PG_HOST'),
+                user=config('PG_USER'),
+                password=config('PG_PASSWORD'),
+                dbname=config('PG_DB'),
+                port=config('PG_PORT'),
+                cursor_factory=RealDictCursor
+            )
+            self.cursor = self.connection.cursor()
+            print('--xx---------------SUCCESFULY AL CONECTAR LA DB----------------xx--')
+        except psycopg2.Error as e:
+            print('--xx---------------ERROR AL CONECTAR LA DB---------------------xx--')
+            raise
 
     def execute(self, query, args=None):
         self.cursor.execute(query, args)
