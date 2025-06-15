@@ -46,8 +46,7 @@ python3 app.py
 ## Configuracion de la Base de Datos
 Para configurar la base de datos se usa un `.env` donde se almacenan las variables de entorno.
 
-Esta es la estructura del `.env`
-- [.env](./.env)
+Esta es la estructura del [.env](./.env)
 
 ```sh 
 PG_HOST=localhost 
@@ -66,5 +65,4 @@ PG_DB=nombre_db
 
 Una vez confirado el archivo `.env` el proyecto se ejecuta con toral normalidad
 
-La base de datos se encuentra en el directorio `database`
-- [DataBase](./database/)
+La base de datos se encuentra en el directorio [DataBase](./database/) con la extension `.sql`
