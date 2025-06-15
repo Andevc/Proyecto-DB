@@ -27,6 +27,7 @@ python -m virtualenv .venv
 . .venv/bin/activate
 ```
 Una vez este activado en la terminal se vera `(env)` antes del **prompt de comandos**
+
 -----------------------
 5. Una vez activado el entorno virtual se deben de instalar los modulos del proyecto.
 
