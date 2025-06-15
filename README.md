@@ -4,42 +4,42 @@
 1. Se debe `clonar`/`descargar` el proyecto
 
 2. Se debe de instalar el modulo virtualenv para poder crear el entorno virtual.
-```sh 
+```py 
 pip install virtualenv
 ```
 3. Una vez instalado `virutalenv` debemos crear el entorno.
 - `Windows`
-```sh
+```py
 python -m venv venv
 ```
 - `Linux`/`MacOS`
-```sh
+```py
 python -m virtualenv .venv
 ```
 ----------------------
 4. Una vez creado el entorno virtual se debe de activar.
 - `Windows`
-```sh
+```py
 /venv/Scripts/Activate
 ```
 - `Linux`/`MacOS`
-```sh
+```py
 . .venv/bin/activate
 ```
 Una vez este activado en la terminal se vera `(env)` antes del **prompt de comandos**
 -----------------------
 5. Una vez activado el entorno virtual se deben de instalar los modulos del proyecto.
 
-```sh
+```py
 pip install -r requirements.txt
 ```
 6. Una vez instalado todos los modulos del proyecto se ejecuta de la siguiente manera.
 - `Windows`
-```sh 
+```py 
 python app.py
 ```
 - `Linux`/`MacOS`
-```sh 
+```py 
 python3 app.py
 ```
 ------------------------------
@@ -48,7 +48,7 @@ Para configurar la base de datos se usa un `.env` donde se almacenan las variabl
 
 Esta es la estructura del [.env](./.env)
 
-```sh 
+```env
 PG_HOST=localhost 
 PG_PORT=5432      
 PG_USER=postgres
