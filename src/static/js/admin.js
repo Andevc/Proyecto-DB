@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 peliculasTable.innerHTML = data.map(pelicula => `
                     <tr>
-                        <td>${pelicula.idPelicula}</td>
-                        <td>${pelicula.Titulo}</td>
-                        <td>${pelicula.Genero}</td>
-                        <td>${pelicula.Clasificacion}</td>
-                        <td>${pelicula.Duracion}</td>
+                        <td>${pelicula.idpelicula}</td>
+                        <td>${pelicula.titulo}</td>
+                        <td>${pelicula.genero}</td>
+                        <td>${pelicula.clasificacion}</td>
+                        <td>${pelicula.duracion}</td>
                         <td>
                             <button class="btn btn-warning btn-sm" onclick="editPelicula(${pelicula.idPelicula})">Editar</button>
                             <button class="btn btn-danger btn-sm" onclick="deletePelicula(${pelicula.idPelicula})">Eliminar</button>

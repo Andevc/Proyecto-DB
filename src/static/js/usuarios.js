@@ -9,17 +9,17 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 usuariosTable.innerHTML = data.map(usuario => `
                     <tr>
-                        <td>${usuario.idCliente}</td>
-                        <td>${usuario.DNI}</td>
-                        <td>${usuario.Nombre}</td>
-                        <td>${usuario.Apellidos}</td>
-                        <td>${usuario.Fecha_Nac}</td>
-                        <td>${usuario.Correo}</td>
-                        <td>${usuario.Telefono || ''}</td>
-                        <td>${usuario.Usuario}</td>
-                        <td>${usuario.Puntos}</td>
-                        <td>${usuario.Tarjeta || ''}</td>
-                        <td>${usuario.Fecha_Registro}</td>
+                        <td>${usuario.idcliente}</td>
+                        <td>${usuario.dni}</td>
+                        <td>${usuario.nombre}</td>
+                        <td>${usuario.apellidos}</td>
+                        <td>${usuario.fecha_Nac}</td>
+                        <td>${usuario.correo}</td>
+                        <td>${usuario.telefono || ''}</td>
+                        <td>${usuario.usuario}</td>
+                        <td>${usuario.puntos}</td>
+                        <td>${usuario.tarjeta || ''}</td>
+                        <td>${usuario.fecha_registro}</td>
                         <td>
                             <button class="btn btn-warning btn-sm" onclick="editUsuario(${usuario.idCliente})">Editar</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteUsuario(${usuario.idCliente})">Eliminar</button>

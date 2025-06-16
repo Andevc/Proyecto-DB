@@ -14,9 +14,9 @@ class DataBase:
                 cursor_factory=RealDictCursor
             )
             self.cursor = self.connection.cursor()
-            print('--xx---------------SUCCESFULY AL CONECTAR LA DB----------------xx--')
+            print('Successfully database connection!')
         except psycopg2.Error as e:
-            print('--xx---------------ERROR AL CONECTAR LA DB---------------------xx--')
+            print('DataBase connection error ')
             raise
 
     def execute(self, query, args=None):
