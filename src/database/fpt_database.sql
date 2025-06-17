@@ -1,3 +1,4 @@
+
 -- FUNCION 1: Reporte de ventas por mes
 CREATE OR REPLACE FUNCTION ventas_por_mes()
 RETURNS TABLE (mes INTEGER, total NUMERIC) AS $$
@@ -15,7 +16,7 @@ CREATE OR REPLACE FUNCTION entradas_por_genero()
 RETURNS TABLE (genero varchar, total INTEGER) AS $$
 BEGIN
     RETURN QUERY
-    SELECT p.Genero, COUNT(*) 
+    SELECT p.Genero, COUNT(*)::INTEGER
     FROM pelicula p
     JOIN sesion s ON s.idPelicula = p.idPelicula
     JOIN reserva r ON r.idSesion = s.idSesion
@@ -29,7 +30,7 @@ CREATE OR REPLACE FUNCTION entradas_por_clasificacion()
 RETURNS TABLE (clasificacion TEXT, total INTEGER) AS $$
 BEGIN
     RETURN QUERY
-    SELECT pelicula.Clasificacion::TEXT, COUNT(*) 
+    SELECT pelicula.Clasificacion::TEXT, COUNT(*)::INTEGER
     FROM pelicula
     JOIN sesion ON pelicula.idPelicula = sesion.idPelicula
     JOIN reserva ON sesion.idSesion = reserva.idSesion
@@ -42,11 +43,11 @@ CREATE OR REPLACE FUNCTION ocupacion_salas()
 RETURNS TABLE (sala TEXT, ocupacion NUMERIC) AS $$
 BEGIN
     RETURN QUERY
-    SELECT ('Sala ' || idSala)::TEXT, 
-           CASE WHEN Capacidad = 0 THEN 0 
-                ELSE ROUND((Ocupacion::DECIMAL / Capacidad) * 100, 2)
+    SELECT ('Sala ' || s.idSala)::TEXT, 
+           CASE WHEN s.Capacidad = 0 THEN 0
+                ELSE ROUND((s.Ocupacion::DECIMAL / s.Capacidad) * 100, 2)
            END
-    FROM sala;
+    FROM sala s;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -70,7 +71,7 @@ BEGIN
     -- Insertar entrada
     INSERT INTO entradas(idCliente, Precio_Total, Numero_Entradas)
     VALUES (cliente_id, array_length(butacas,1) * 10.00, array_length(butacas,1))
-    RETURNING idEntrada INTO entrada_id;
+    RETURNING identrada INTO entrada_id;
 
     -- Insertar reservas + actualizar butacas
     FOREACH b_id IN ARRAY butacas
