@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, abort
 from src.database.db_pgsql import DataBase
 
 bp = Blueprint('compra', __name__)
@@ -13,7 +13,7 @@ def obtener_peliculas():
         db.close()
     return jsonify(peliculas)
 
-@bp.route('/obtener_sesiones/<int:idPelicula>', methods=['GET'])
+@bp.route('/obtener-sesiones/<int:idPelicula>', methods=['GET'])
 def obtener_sesiones_por_pelicula(idPelicula):
     db = DataBase()
     try:
@@ -24,7 +24,7 @@ def obtener_sesiones_por_pelicula(idPelicula):
         """, (idPelicula,))
         sesiones = db.fetchall()
         for sesion in sesiones:
-            sesion['Hora'] = str(sesion['Hora'])
+            sesion['hora'] = str(sesion['hora'])
     finally:
         db.close()
     return jsonify(sesiones)
@@ -41,39 +41,36 @@ def obtener_butacas(idSala):
 
 @bp.route('/realizar_compra', methods=['POST'])
 def realizar_compra():
+    idCliente = session.get('idCliente')
+    if idCliente is None:
+        abort(401, "Usuario no autenticado")
+
     datos = request.json
-    idCliente = session.get('usuario_id')  # Asegúrate que esto esté guardado al hacer login
+    
+    
     idSesion = datos['idSesion']
+    idSesion = int(idSesion)
     idButacas = datos['idButacas']
-    cantidad = len(idButacas)
-    precio_por_boleto = 10.00
-    precio_total = cantidad * precio_por_boleto
+    idButacas = list(map(int, idButacas))
 
     db = DataBase()
-    cursor = db.cursor()
-
-    # Insertar entrada
-    cursor.execute("""
-        INSERT INTO entradas (idCliente, Precio_Total, Numero_Entradas)
-        VALUES (%s, %s, %s)
-    """, (idCliente, precio_total, cantidad))
-    db.commit()
-
-    # Obtener id de la entrada recién creada
-    cursor.execute("SELECT LASTVAL()")
-    idEntrada = cursor.fetchone()[0]
-
-    # Insertar reservas y actualizar estado de butacas
-    for idButaca in idButacas:
-        cursor.execute("""
-            INSERT INTO reserva (idButaca, idEntrada, idSesion, Coste, Fecha_Reserva)
-            VALUES (%s, %s, %s, %s, CURRENT_DATE)
-        """, (idButaca, idEntrada, idSesion, precio_por_boleto))
-
-        cursor.execute("UPDATE butaca SET Estado = 'Ocupada' WHERE idButaca = %s", (idButaca,))
     
-    db.commit()
-    cursor.close()
-    db.close()
 
-    return jsonify({"mensaje": "Compra realizada con éxito", "precio_total": precio_total})
+    try:
+        # Procedimiento que hace todo: entrada + reservas + actualiza butacas
+        db.execute("CALL crear_reserva_completa(%s::int, %s::int, %s::int[])", (idCliente, idSesion, idButacas))
+
+
+        # Procedimiento que suma puntos al cliente
+        db.execute("CALL asignar_puntos_por_entrada(%s, %s)", (idCliente, len(idButacas)))
+
+        db.commit()
+        return jsonify({"mensaje": "Compra realizada con éxito"})
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        db.close()

@@ -32,3 +32,6 @@ class DataBase:
 
     def close(self):
         self.connection.close()
+
+    def commit(self):
+        self.connection.commit()

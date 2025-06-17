@@ -6,76 +6,76 @@ const flechaDerecha = document.getElementById('flecha-derecha');
 
 // ? ----- ----- Event Listener para la flecha derecha. ----- -----
 flechaDerecha.addEventListener('click', () => {
-	fila.scrollLeft += fila.offsetWidth;
+    fila.scrollLeft += fila.offsetWidth;
 
-	const indicadorActivo = document.querySelector('.indicadores .activo');
-	if(indicadorActivo.nextSibling){
-		indicadorActivo.nextSibling.classList.add('activo');
-		indicadorActivo.classList.remove('activo');
-	}
+    const indicadorActivo = document.querySelector('.indicadores .activo');
+    if (indicadorActivo.nextSibling) {
+        indicadorActivo.nextSibling.classList.add('activo');
+        indicadorActivo.classList.remove('activo');
+    }
 });
 
 // ? ----- ----- Event Listener para la flecha izquierda. ----- -----
 flechaIzquierda.addEventListener('click', () => {
-	fila.scrollLeft -= fila.offsetWidth;
+    fila.scrollLeft -= fila.offsetWidth;
 
-	const indicadorActivo = document.querySelector('.indicadores .activo');
-	if(indicadorActivo.previousSibling){
-		indicadorActivo.previousSibling.classList.add('activo');
-		indicadorActivo.classList.remove('activo');
-	}
+    const indicadorActivo = document.querySelector('.indicadores .activo');
+    if (indicadorActivo.previousSibling) {
+        indicadorActivo.previousSibling.classList.add('activo');
+        indicadorActivo.classList.remove('activo');
+    }
 });
 
 // ? ----- ----- Paginacion ----- -----
 const numeroPaginas = Math.ceil(peliculas.length / 5);
-for(let i = 0; i < numeroPaginas; i++){
-	const indicador = document.createElement('button');
+for (let i = 0; i < numeroPaginas; i++) {
+    const indicador = document.createElement('button');
 
-	if(i === 0){
-		indicador.classList.add('activo');
-	}
+    if (i === 0) {
+        indicador.classList.add('activo');
+    }
 
-	document.querySelector('.indicadores').appendChild(indicador);
-	indicador.addEventListener('click', (e) => {
-		fila.scrollLeft = i * fila.offsetWidth;
+    document.querySelector('.indicadores').appendChild(indicador);
+    indicador.addEventListener('click', (e) => {
+        fila.scrollLeft = i * fila.offsetWidth;
 
-		document.querySelector('.indicadores .activo').classList.remove('activo');
-		e.target.classList.add('activo');
-	});
+        document.querySelector('.indicadores .activo').classList.remove('activo');
+        e.target.classList.add('activo');
+    });
 }
 
 // ? ----- ----- Hover ----- -----
 peliculas.forEach((pelicula) => {
-	pelicula.addEventListener('mouseenter', (e) => {
-		const elemento = e.currentTarget;
-		setTimeout(() => {
-			peliculas.forEach(pelicula => pelicula.classList.remove('hover'));
-			elemento.classList.add('hover');
-		}, 300);
-	});
+    pelicula.addEventListener('mouseenter', (e) => {
+        const elemento = e.currentTarget;
+        setTimeout(() => {
+            peliculas.forEach(pelicula => pelicula.classList.remove('hover'));
+            elemento.classList.add('hover');
+        }, 300);
+    });
 });
 
 fila.addEventListener('mouseleave', () => {
-	peliculas.forEach(pelicula => pelicula.classList.remove('hover'));
+    peliculas.forEach(pelicula => pelicula.classList.remove('hover'));
 });
 //--Ventana Modal
 document.addEventListener("DOMContentLoaded", function () {
     const peliculaImgs = document.querySelectorAll('.pelicula-img');
-    
+
     peliculaImgs.forEach(img => {
-        img.addEventListener('click', function() {
+        img.addEventListener('click', function () {
             const idPelicula = img.getAttribute('data-id');
-            
+
             fetch(`/pelicula/${idPelicula}`)
                 .then(response => response.json())
                 .then(data => {
                     // Obtener datos de la película
                     const pelicula = data;
-                    document.getElementById('modalTitulo').innerText = pelicula.Titulo;
-                    document.getElementById('modalImg').src = pelicula.Cartel;
-                    document.getElementById('modalDescripcion').innerText = pelicula.Sinopsis;
-                    document.getElementById('modalGenero').innerText = `Género: ${pelicula.Genero}`;
-                    document.getElementById('modalDuracion').innerText = `Duración: ${pelicula.Duracion} minutos`;
+                    document.getElementById('modalTitulo').innerText = pelicula.titulo;
+                    document.getElementById('modalImg').src = pelicula.cartel;
+                    document.getElementById('modalDescripcion').innerText = pelicula.sinopsis;
+                    document.getElementById('modalGenero').innerText = `Género: ${pelicula.genero}`;
+                    document.getElementById('modalDuracion').innerText = `Duración: ${pelicula.duracion} minutos`;
 
                     // Mostrar el modal
                     const modal = new bootstrap.Modal(document.getElementById('modalPelicula'));
@@ -83,10 +83,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     // Botón para ver sesiones
                     const btnVerSesiones = document.getElementById('btnVerSesiones');
-                    btnVerSesiones.onclick = function() {
+                    btnVerSesiones.onclick = function () {
                         const sesionesList = document.getElementById('sesionesList');
                         sesionesList.innerHTML = ''; // Limpiar sesiones previas
-                        
+
                         // Llamar a la API para obtener las sesiones de la película
                         fetch(`/sesiones/${idPelicula}`)
                             .then(response => response.json())
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     // Agregar las sesiones al modal
                                     sesiones.forEach(sesion => {
                                         const li = document.createElement('li');
-                                        li.innerText = `Fecha: ${sesion.Fecha}, Hora: ${sesion.Hora}, Idioma: ${sesion.Idioma}`;
+                                        li.innerText = `Fecha: ${sesion.fecha}, Hora: ${sesion.hora}, Idioma: ${sesion.idioma}`;
                                         sesionesList.appendChild(li);
                                     });
                                 }
@@ -133,16 +133,16 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch("/obtener_peliculas")
         .then(res => res.json())
         .then(peliculas => {
-            selectPelicula.innerHTML = peliculas.map(p => `<option value="${p.idPelicula}">${p.Titulo}</option>`).join("");
+            selectPelicula.innerHTML = peliculas.map(p => `<option value="${p.idpelicula}">${p.titulo}</option>`).join("");
         });
 
     // Cargar sesiones al seleccionar una película
     selectPelicula.addEventListener("change", function () {
-        fetch(`/obtener_sesiones/${this.value}`)
+        fetch(`/obtener-sesiones/${this.value}`)
             .then(res => res.json())
             .then(sesiones => {
-                selectSesion.innerHTML = sesiones.map(s => 
-                    `<option value="${s.idSesion}" data-idsala="${s.idSala}">${s.Fecha} - ${s.Hora}</option>`
+                selectSesion.innerHTML = sesiones.map(s =>
+                    `<option value="${s.idsesion}" data-idsala="${s.idsala}">${s.fecha} - ${s.hora}</option>`
                 ).join("");
             });
     });
@@ -155,8 +155,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(butacas => {
                 butacasContainer.innerHTML = butacas.map(b =>
                     `<div>
-                        <input type="checkbox" id="butaca${b.idButaca}" value="${b.idButaca}" ${b.Estado === 'Ocupada' ? 'disabled' : ''}>
-                        <label for="butaca${b.idButaca}">Fila ${b.Fila}, Número ${b.Numero}</label>
+                        <input type="checkbox" id="butaca${b.idbutaca}" value="${b.idbutaca}" ${b.estado === 'Ocupada' ? 'disabled' : 'enable'}>
+                        <label for="butaca${b.idbutaca}">Fila ${b.fila}, Número ${b.numero}</label>
                     </div>`
                 ).join("");
                 // Agregar evento para actualizar cantidad y precio
@@ -190,11 +190,15 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch("/realizar_compra", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "same-origin", // Envía cookies para mantener sesión
             body: JSON.stringify({ idSesion, idButacas })
         })
-            .then(res => res.json())
-            .then(data => alert(`Compra realizada con éxito. Precio total: $${data.precio_total}`))
-            .catch(err => console.error("Error:", err));
+            .then(res => {
+                if (!res.ok) throw new Error("Error en la compra");
+                return res.json();
+            })
+            .then(data => alert(data.message || "Compra realizada con éxito"))
+            .catch(err => alert("Error al realizar la compra: " + err.message));
     });
 });
 
@@ -225,7 +229,7 @@ setInterval(changeBackground, 60000);
 //codigo agregado 27/1/25
 document.addEventListener("DOMContentLoaded", function () {
     // Formulario de Método de Pago
-    const formMetodoPago = document.getElementById("formMetodoPago");
+    const formMetodoPago = document.getElementById("formCompra");
 
     formMetodoPago.addEventListener("submit", function (e) {
         e.preventDefault();

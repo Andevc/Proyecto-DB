@@ -9,15 +9,15 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 sesionesTable.innerHTML = data.map(sesion => `
                     <tr>
-                        <td>${sesion.idSesion}</td>
-                        <td>${sesion.Fecha}</td>
-                        <td>${sesion.Hora}</td>
-                        <td>${sesion.Idioma}</td>
-                        <td>${sesion.idPelicula}</td>
-                        <td>${sesion.idSala}</td>
+                        <td>${sesion.idsesion}</td>
+                        <td>${sesion.fecha}</td>
+                        <td>${sesion.hora}</td>
+                        <td>${sesion.idioma}</td>
+                        <td>${sesion.idpelicula}</td>
+                        <td>${sesion.idsala}</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" onclick="editSesion(${sesion.idSesion})">Editar</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteSesion(${sesion.idSesion})">Eliminar</button>
+                            <button class="btn btn-warning btn-sm" onclick="editSesion(${sesion.idsesion})">Editar</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteSesion(${sesion.idsesion})">Eliminar</button>
                         </td>
                     </tr>
                 `).join("");

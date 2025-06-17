@@ -412,11 +412,11 @@
                     fetch(`/pelicula/${idPelicula}`)
                         .then(response => response.json())
                         .then(data => {
-                            document.getElementById('modalTitulo').innerText = data.Titulo;
+                            document.getElementById('modalTitulo').innerText = data.titulo;
                             document.getElementById('modalImg').src = data.Cartel;
-                            document.getElementById('modalDescripcion').innerText = data.Sinopsis;
-                            document.getElementById('modalGenero').innerText = `Género: ${data.Genero}`;
-                            document.getElementById('modalDuracion').innerText = `Duración: ${data.Duracion} minutos`;
+                            document.getElementById('modalDescripcion').innerText = data.sinopsis;
+                            document.getElementById('modalGenero').innerText = `Género: ${data.genero}`;
+                            document.getElementById('modalDuracion').innerText = `Duración: ${data.duracion} minutos`;
                             
                             // Mostrar el modal
                             const modal = new bootstrap.Modal(document.getElementById('modalPelicula'));
@@ -432,7 +432,7 @@
                                         sesionesList.innerHTML = ''; // Limpiar sesiones previas
                                         sesiones.forEach(sesion => {
                                             const li = document.createElement('li');
-                                            li.innerText = `Fecha: ${sesion.Fecha}, Hora: ${sesion.Hora}, Idioma: ${sesion.Idioma}`;
+                                            li.innerText = `Fecha: ${sesion.fecha}, Hora: ${sesion.hora}, Idioma: ${sesion.idioma}`;
                                             sesionesList.appendChild(li);
                                         });
                                         // Mostrar las sesiones

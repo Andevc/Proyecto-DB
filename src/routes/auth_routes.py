@@ -11,17 +11,21 @@ def login():
 
         if usuario == 'manager' and contrasena == 'admin123':
             session['usuario'] = usuario
+            session['idcliente'] = 0  # O algún id para manager
             return redirect('/admin')
 
         db = DataBase()
         try:
             db.execute("SELECT * FROM usuarios WHERE usuario = %s AND contrasena = %s", (usuario, contrasena))
             user = db.fetchone()
+            print(user)
         finally:
             db.close()
 
         if user:
             session['usuario'] = user['usuario']
+            session['idCliente'] = user['idcliente']  # Cambiado a minúsculas según tu resultado
+            print(user)  # para verificar en consola
             return redirect('/')
         else:
             flash('Usuario o contraseña incorrectos')
