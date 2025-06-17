@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, session
-from src.database.db_pgsql import DataBase
+
 
 bp = Blueprint('admin', __name__)
 

@@ -99,9 +99,7 @@ def update_pelicula(id):
 @bp.route('/api/peliculas/<int:id>', methods=['DELETE'])
 def delete_pelicula(id):
     db = DataBase()
-    cursor = db.cursor()
-    cursor.execute("DELETE FROM pelicula WHERE idPelicula = %s", (id,))
+    db.execute("DELETE FROM pelicula WHERE idPelicula = %s", (id,))
     db.commit()
-    cursor.close()
     db.close()
     return jsonify({"message": "Película eliminada"})

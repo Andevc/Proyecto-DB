@@ -15,8 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         <td>${pelicula.clasificacion}</td>
                         <td>${pelicula.duracion}</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" onclick="editPelicula(${pelicula.idPelicula})">Editar</button>
-                            <button class="btn btn-danger btn-sm" onclick="deletePelicula(${pelicula.idPelicula})">Eliminar</button>
+                            <button class="btn btn-warning btn-sm" onclick="editPelicula(${pelicula.idpelicula})">Editar</button>
+                            <button class="btn btn-danger btn-sm" onclick="deletePelicula(${pelicula.idpelicula})">Eliminar</button>
                         </td>
                     </tr>
                 `).join("");
@@ -27,11 +27,11 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch(`/api/peliculas/${idPelicula}`)
             .then(response => response.json())
             .then(data => {
-                document.getElementById("idPelicula").value = data.idPelicula;
-                document.getElementById("titulo").value = data.Titulo;
-                document.getElementById("genero").value = data.Genero;
-                document.getElementById("clasificacion").value = data.Clasificacion;
-                document.getElementById("duracion").value = data.Duracion;
+                document.getElementById("idPelicula").value = data.idpelicula;
+                document.getElementById("titulo").value = data.titulo;
+                document.getElementById("genero").value = data.genero;
+                document.getElementById("clasificacion").value = data.clasificacion;
+                document.getElementById("duracion").value = data.duracion;
                 modal.show();
             });
     };
